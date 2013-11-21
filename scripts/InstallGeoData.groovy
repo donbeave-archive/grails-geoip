@@ -14,6 +14,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+/**
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 includeTargets << grailsScript("_GrailsEvents")
 includeTargets << grailsScript('_GrailsBootstrap')
 

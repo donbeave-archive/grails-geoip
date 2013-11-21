@@ -16,10 +16,13 @@
  */
 package org.grails.plugin.geoip
 
+import com.maxmind.geoip.Location
+
 /**
  * Service for determining a geographical location based on an IP. 
  *
  * @author Radu Andrei Tanasa
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
 public class GeoIpService {
 
@@ -42,6 +45,10 @@ public class GeoIpService {
       ipAddress = request.remoteAddr
 
     return ipAddress
+  }
+
+  boolean isInCountry(Location location, String countryCode) {
+    location.countryCode?.equals(countryCode)
   }
 
 }

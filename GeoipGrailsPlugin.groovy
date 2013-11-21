@@ -20,6 +20,10 @@ import grails.util.Environment
 import grails.util.Holders
 import org.codehaus.groovy.grails.commons.GrailsApplication
 
+/**
+ * @author Radu Andrei Tanasa
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 class GeoipGrailsPlugin {
   def version = "0.3-SNAPSHOT"
   def grailsVersion = "2.0 > *"
@@ -165,6 +169,29 @@ This product includes GeoLite data created by MaxMind, available from
     klass.metaClass.withLocation = { Closure closure ->
       def geoIpService = Holders.applicationContext.geoIpService
       closure.call geoIpService.getLocation(geoIpService.getIpAddress(request))
+    }
+
+    klass.metaClass.methodMissing = { String methodName, args ->
+      if (methodName.startsWith('isIn')) {
+        def cachedMethod = { Object[] cmArgs ->
+          def code = methodName[4..-1]
+
+          def geoIpService = Holders.applicationContext.geoIpService
+          def location = geoIpService.getLocation(geoIpService.getIpAddress(request))
+
+          if (location) {
+            return geoIpService.isInCountry(location, code)
+          } else {
+            return false
+          }
+        }
+
+        klass.metaClass."${methodName}" = cachedMethod
+
+        return cachedMethod(args)
+      } else {
+        throw new MissingMethodException(methodName, delegate, args)
+      }
     }
   }
 
