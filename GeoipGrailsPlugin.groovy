@@ -25,7 +25,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
 class GeoipGrailsPlugin {
-  def version = "0.3-SNAPSHOT"
+  def version = "0.3"
   def grailsVersion = "2.0 > *"
   def dependsOn = [:]
   def pluginExcludes = [
