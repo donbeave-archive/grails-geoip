@@ -33,7 +33,7 @@ Usage
 
 The plugin adds dynamic methods to your controllers to determine location of client is accessing the app:
 
-**isIn__XXX__()** (where `XXX` is [ISO 3166 Country Code][country-codes]) will be true if the client use IP from this country.
+**isInXXX()** (where `XXX` is [ISO 3166 Country Code][country-codes]) will be true if the client use IP from this country.
 
 ```groovy
 def list() {
