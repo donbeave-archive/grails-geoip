@@ -189,9 +189,6 @@ This product includes GeoLite data created by MaxMind, available from
         klass.metaClass."${methodName}" = cachedMethod
 
         return cachedMethod(args)
-      } else {
-          //throw new MissingMethodException(methodName, delegate, args)
-          log.info ("GEOIP thinks it should throw missing method exception for method '${methodName}', ${delegate}, ${args}")
       }
     }
   }
