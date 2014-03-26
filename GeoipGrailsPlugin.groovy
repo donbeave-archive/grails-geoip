@@ -26,7 +26,7 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  */
 class GeoipGrailsPlugin {
 
-    def version = '0.3'
+    def version = '0.3.1'
     def grailsVersion = '2.0 > *'
     def dependsOn = [:]
     def pluginExcludes = [
