@@ -17,7 +17,7 @@ grails.project.dependency.resolution = {
     mavenCentral()
   }
   dependencies {
-    runtime 'com.maxmind.geoip:geoip-api:1.2.11', {
+    runtime 'com.maxmind.geoip:geoip-api:1.2.12', {
       excludes 'junit', 'mockito-core'
     }
   }
