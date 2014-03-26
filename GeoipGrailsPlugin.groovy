@@ -45,7 +45,7 @@ This product includes GeoLite data created by MaxMind, available from
 [www.maxmind.com|http://www.maxmind.com].
 '''
 
-    def documentation = 'http://grails.org/Geoip+Plugin'
+    def documentation = 'http://grails.org/plugin/geoip'
 
     def license = 'LGPL2'
 
@@ -54,7 +54,8 @@ This product includes GeoLite data created by MaxMind, available from
             [name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']
     ]
 
-    def scm = [url: 'https://github.com/donbeave/grails-geoip']
+    def issueManagement = [system: 'GITHUB', url: 'https://github.com/donbeave/grails-geoip/issues']
+    def scm = [url: 'https://github.com/donbeave/grails-geoip/']
 
     def doWithSpring = {
         def conf = getConfiguration(application)
