@@ -18,7 +18,7 @@
 /**
  * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
-includeTargets << grailsScript("_GrailsEvents")
+includeTargets << grailsScript('_GrailsEvents')
 includeTargets << grailsScript('_GrailsBootstrap')
 
 geoPath = '/data/maxmind'
@@ -26,33 +26,33 @@ geoLiteSources = "${basedir}/web-app${geoPath}"
 appDir = "$basedir/grails-app"
 
 target(installGeoLite: 'Downloads GeoLite from dev.maxmind.com') {
-  event('StatusUpdate', ['Downloading GeoLite'])
+    event('StatusUpdate', ['Downloading GeoLite'])
 
-  mkdir(dir: "${geoLiteSources}")
+    mkdir(dir: "${geoLiteSources}")
 
-  delete(file: "${geoLiteSources}/GeoLiteCity.dat")
+    delete(file: "${geoLiteSources}/GeoLiteCity.dat")
 
-  get(dest: "${geoLiteSources}/GeoLiteCity.dat.gz",
-      src: 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz',
-      verbose: true)
+    get(dest: "${geoLiteSources}/GeoLiteCity.dat.gz",
+            src: 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz',
+            verbose: true)
 
-  gunzip(src: "${geoLiteSources}/GeoLiteCity.dat.gz")
+    gunzip(src: "${geoLiteSources}/GeoLiteCity.dat.gz")
 
-  delete(file: "${geoLiteSources}/GeoLiteCity.dat.gz")
+    delete(file: "${geoLiteSources}/GeoLiteCity.dat.gz")
 
-  updateConfig()
+    updateConfig()
 
-  event('StatusFinal', ['GeoLite installed successfully'])
+    event('StatusFinal', ['GeoLite installed successfully'])
 }
 
 private void updateConfig() {
-  def configFile = new File(appDir, 'conf/Config.groovy')
-  if (configFile.exists()) {
-    configFile.withWriterAppend {
-      it.writeLine '\n// Added by the GeoIP plugin:'
-      it.writeLine "grails.plugin.geoip.data.resource = '${geoPath}/GeoLiteCity.dat'"
+    def configFile = new File(appDir, 'conf/Config.groovy')
+    if (configFile.exists()) {
+        configFile.withWriterAppend {
+            it.writeLine '\n// Added by the GeoIP plugin:'
+            it.writeLine "grails.plugin.geoip.data.resource = '${geoPath}/GeoLiteCity.dat'"
+        }
     }
-  }
 }
 
 setDefaultTarget 'installGeoLite'

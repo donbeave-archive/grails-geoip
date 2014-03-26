@@ -21,11 +21,11 @@ import com.maxmind.geoip.LookupService
  * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
 geoip {
-  active = true
+    active = true
 
-  printStatusMessages = true
+    printStatusMessages = true
 
-  data {
-    cache = LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE
-  }
+    data {
+        cache = LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE
+    }
 }

@@ -26,29 +26,29 @@ import com.maxmind.geoip.Location
  */
 public class GeoIpService {
 
-  def geoLookupService
+    def geoLookupService
 
-  def getLocation(def ip) {
-    geoLookupService.getLocation(ip)
-  }
+    def getLocation(def ip) {
+        geoLookupService.getLocation(ip)
+    }
 
-  def getIpAddress(request) {
-    def ipAddress = request.getHeader('X-Real-IP')
+    def getIpAddress(request) {
+        def ipAddress = request.getHeader('X-Real-IP')
 
-    if (!ipAddress)
-      ipAddress = request.getHeader('Client-IP')
+        if (!ipAddress)
+            ipAddress = request.getHeader('Client-IP')
 
-    if (!ipAddress)
-      ipAddress = request.getHeader('X-Forwarded-For')
+        if (!ipAddress)
+            ipAddress = request.getHeader('X-Forwarded-For')
 
-    if (!ipAddress)
-      ipAddress = request.remoteAddr
+        if (!ipAddress)
+            ipAddress = request.remoteAddr
 
-    return ipAddress
-  }
+        return ipAddress
+    }
 
-  boolean isInCountry(Location location, String countryCode) {
-    location.countryCode?.equals(countryCode)
-  }
+    boolean isInCountry(Location location, String countryCode) {
+        location.countryCode?.equals(countryCode)
+    }
 
 }
