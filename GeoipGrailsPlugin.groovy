@@ -173,26 +173,15 @@ This product includes GeoLite data created by MaxMind, available from
             closure.call geoIpService.getLocation(geoIpService.getIpAddress(request))
         }
 
-        klass.metaClass.methodMissing = { String methodName, args ->
-            if (methodName.startsWith('isIn')) {
-                def cachedMethod = { Object[] cmArgs ->
-                    def code = methodName[4..-1]
+        klass.metaClass.isInCountry = { String countrycode ->
+            def geoIpService = Holders.applicationContext.geoIpService
+            def location = geoIpService.getLocation(geoIpService.getIpAddress(request))
 
-                    def geoIpService = Holders.applicationContext.geoIpService
-                    def location = geoIpService.getLocation(geoIpService.getIpAddress(request))
-
-                    if (location) {
-                        return geoIpService.isInCountry(location, code)
-                    } else {
-                        return false
-                    }
-                }
-
-                klass.metaClass."${methodName}" = cachedMethod
-
-                return cachedMethod(args)
+            if (location) {
+                return geoIpService.isInCountry(location, countrycode)
+            } else {
+                return false
             }
         }
     }
-
 }
