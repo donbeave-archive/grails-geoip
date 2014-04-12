@@ -18,7 +18,7 @@ Add the following plugin definition to your BuildConfig:
 …
 plugins {
 …
-	compile ':geoip:0.3'
+	compile ':geoip:0.3.2'
 …
 }
 ```
@@ -31,14 +31,14 @@ grails install-geo-data
 Usage
 -----
 
-The plugin adds dynamic methods to your controllers to determine location of client is accessing the app:
+The plugin adds a dynamic method to your controllers to determine location of client is accessing the app:
 
-**isInXXX()** (where `XXX` is [ISO 3166 Country Code][country-codes]) will be true if the client use IP from this country.
+**isInCountry(String countryCode)** (where `countryCode` is [ISO 3166 Country Code][country-codes]) will be true if the client use IP from this country.
 
 ```groovy
 def list() {
 	...
-	if (isInUS()) {
+	if (isInCountry('US')) {
 		render(view: 'usa')
 	} else {
 		render(view: 'default')
