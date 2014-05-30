@@ -53,6 +53,7 @@ This product includes GeoLite data created by MaxMind, available from
             [name: 'Radu Andrei Tanasa', email: 'radu.tanasa@lightwaysoftware.com'],
             [name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']
     ]
+    def organization = [name: 'Polusharie', url: 'http://www.polusharie.com']
 
     def issueManagement = [system: 'GITHUB', url: 'https://github.com/donbeave/grails-geoip/issues']
     def scm = [url: 'https://github.com/donbeave/grails-geoip/']
