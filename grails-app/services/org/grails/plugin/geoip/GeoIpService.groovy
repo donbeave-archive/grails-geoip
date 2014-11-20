@@ -26,20 +26,26 @@ import com.maxmind.geoip.Location
  */
 public class GeoIpService {
 
+    static List<String> ipHeaders = ['X-Real-IP',
+                                     'Client-IP',
+                                     'X-Forwarded-For',
+                                     'Proxy-Client-IP',
+                                     'WL-Proxy-Client-IP',
+                                     'rlnclientipaddr']
     def geoLookupService
 
     def getLocation(def ip) {
         geoLookupService.getLocation(ip)
     }
 
-    def getIpAddress(request) {
-        def ipAddress = request.getHeader('X-Real-IP')
+    String getIpAddress(request) {
+        String unknown = 'unknown'
+        String ipAddress = unknown
 
-        if (!ipAddress)
-            ipAddress = request.getHeader('Client-IP')
-
-        if (!ipAddress)
-            ipAddress = request.getHeader('X-Forwarded-For')
+        ipHeaders.each { header ->
+            if (!ipAddress || unknown.equalsIgnoreCase(ipAddress))
+                ipAddress = request.getHeader(header)
+        }
 
         if (!ipAddress)
             ipAddress = request.remoteAddr
