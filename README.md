@@ -63,11 +63,12 @@ def list() {
 Copyright and license
 ---------------------
 
-Copyright 2009-2013 Radu Andrei Tanasa, Alexey Zhokhov under the [GNU Lesser General Public License, version 2.1](LICENSE). Supported by [Polusharie][polusharie].
+Copyright 2009-2013 Radu Andrei Tanasa, Alexey Zhokhov under the [GNU Lesser General Public License, version 2.1](LICENSE). Supported by [AZ][zhokhov].
+
+[zhokhov]: http://www.zhokhov.com
 
 This product includes GeoLite data created by MaxMind, available from
 [www.maxmind.com][maxmind].
 
 [maxmind]: http://www.maxmind.com
-[country-codes]: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
-[polusharie]: http://www.polusharie.com
+[country-codes]: http://dev.maxmind.com/geoip/legacy/codes/iso3166
