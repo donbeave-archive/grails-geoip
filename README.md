@@ -1,5 +1,7 @@
-grails-geoip [![Build Status](https://api.travis-ci.org/donbeave/grails-geoip.png?branch=master)](https://travis-ci.org/donbeave/grails-geoip)
-============
+# grails-geoip
+
+[![Build Status](https://api.travis-ci.org/donbeave/grails-geoip.png?branch=master)](https://travis-ci.org/donbeave/grails-geoip)
+[![Analytics](https://ga-beacon.appspot.com/UA-71075299-1/grails-geoip/main-page)](https://github.com/igrigorik/ga-beacon)
 
 Grails GeoIP Plugin (based on [MaxMind][maxmind] library)
 
