@@ -26,6 +26,8 @@ import com.maxmind.geoip.Location
  */
 public class GeoIpService {
 
+    static transactional = false
+
     static List<String> ipHeaders = ['X-Real-IP',
                                      'Client-IP',
                                      'X-Forwarded-For',
