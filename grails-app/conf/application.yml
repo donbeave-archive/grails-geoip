@@ -1,0 +1,13 @@
+---
+grails:
+    profile: web-plugin
+    codegen:
+        defaultPackage: 'grails.plugins.geoip'
+    spring:
+        transactionManagement:
+            proxies: false
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
