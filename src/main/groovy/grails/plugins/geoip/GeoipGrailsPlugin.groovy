@@ -1,70 +1,192 @@
+/* Copyright 2009-2013 the original author or authors.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package grails.plugins.geoip
 
-import grails.plugins.*
+import grails.core.GrailsApplication
+import grails.plugins.Plugin
 
+import com.maxmind.geoip.LookupService
+import grails.util.Environment
+import grails.util.Holders
+
+/**
+ * @author Radu Andrei Tanasa
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 class GeoipGrailsPlugin extends Plugin {
 
-    // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.1.4 > *"
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+    def grailsVersion = "3.0.0 > *"
 
-    // TODO Fill in these fields
-    def title = "Geoip" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
-    def description = '''\
-Brief summary/description of the plugin.
+    def title = 'Grails GeoIP Plugin'
+    def author = 'Radu Andrei Tanasa, Alexey Zhokhov'
+    def authorEmail = 'radu.tanasa@lightwaysoftware.com'
+    def description = '''\\
+This plugin facilitates grails integration with the opensource GeoIP framework offered by MaxMind.
+Using its straightforward API one can find out the country, area, city, geographical coordinates and
+others based on an IP.
+
+This product includes GeoLite data created by MaxMind, available from
+[www.maxmind.com|http://www.maxmind.com].
 '''
+
     def profiles = ['web']
 
-    // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/geoip"
+    def documentation = 'http://grails.org/plugin/geoip'
 
-    // Extra (optional) plugin metadata
+    def license = 'LGPL2'
 
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+    def developers = [
+            [name: 'Radu Andrei Tanasa', email: 'radu.tanasa@lightwaysoftware.com'],
+            [name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']
+    ]
+    def organization = [name: 'Polusharie', url: 'http://www.polusharie.com']
 
-    // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
+    def issueManagement = [system: 'GITHUB', url: 'https://github.com/donbeave/grails-geoip/issues']
+    def scm = [url: 'https://github.com/donbeave/grails-geoip/']
 
-    // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
+    Closure doWithSpring() {
+        { ->
 
-    // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+            def conf = getConfiguration(application)
 
-    // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+            if (!conf || !conf.active) {
+                return
+            }
 
-    Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
+            boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
+
+            if (printStatusMessages) {
+                println '\nConfiguring MaxMind GeoIP ...'
+            }
+
+            def dataResource = conf.data.path
+
+            try {
+                if (conf.data.resource) {
+                    dataResource = application.parentContext.getResource(conf.data.resource).getFile()
+                }
+            } catch (Exception e) {
+                println "ERROR: GeoIP data file \"${conf.data.resource}\" not exist."
+                return;
+            }
+
+            if (!dataResource) {
+                println 'ERROR: GeoIP data file not installed.'
+                return;
+            }
+
+            /** geoLookupService */
+            geoLookupService(LookupService, dataResource, conf.data.cache ?:
+                    (LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE))
+
+            if (printStatusMessages) {
+                println '... finished configuring MaxMind GeoIP\n'
+            }
         }
     }
 
     void doWithDynamicMethods() {
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
+        def conf = application.config.grails.plugin.geoip
 
-    void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
+        if (!conf || !conf.active) {
+            return
+        }
+
+        for (cc in application.controllerClasses) {
+            addDynamicMethods cc.clazz
+        }
     }
 
     void onChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+        def conf = application.config.grails.plugin.geoip
+
+        if (!conf || !conf.active) {
+            return
+        }
+
+        for (cc in application.controllerClasses) {
+            addDynamicMethods cc.clazz
+        }
     }
 
-    void onConfigChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
+    // Get a configuration instance
+    private getConfiguration(GrailsApplication application) {
+        def config = application.config
+
+        // try to load it from class file and merge into GrailsApplication#config
+        // Config.groovy properties override the default one
+        try {
+            Class dataSourceClass = application.getClassLoader().loadClass('DefaultGeoConfig')
+            ConfigSlurper configSlurper = new ConfigSlurper(Environment.current.name)
+            Map binding = [:]
+            binding.userHome = System.properties['user.home']
+            binding.grailsEnv = application.metadata['grails.env']
+            binding.appName = application.metadata['app.name']
+            binding.appVersion = application.metadata['app.version']
+            configSlurper.binding = binding
+
+            ConfigObject defaultConfig = configSlurper.parse(dataSourceClass)
+
+            ConfigObject newGeoConfig = new ConfigObject()
+            newGeoConfig.putAll(defaultConfig.geoip.merge(config.grails.plugin.geoip))
+
+            config.grails.plugin.geoip = newGeoConfig
+            application.configChanged()
+            return config.grails.plugin.geoip
+        } catch (ClassNotFoundException e) {
+            log.debug("GeoConfig default configuration file not found: ${e.message}")
+        }
+
+        // Here the default configuration file was not found, so we
+        // try to get it from GrailsApplication#config and add some mandatory default values
+        if (config.grails.plugin.containsKey('geoip')) {
+            if (config.grails.plugin.geoip.active == [:]) {
+                config.grails.plugin.geoip.active = true
+            }
+            if (config.grails.plugin.geoip.printStatusMessages == [:]) {
+                config.grails.plugin.geoip.printStatusMessages = true
+            }
+            application.configChanged()
+            return config.grails.plugin.geoip
+        }
+
+        // No config found, add some default and obligatory properties
+        config.grails.plugin.geoip.active = true
+        config.grails.plugin.geoip.printStatusMessages = true
+        application.configChanged()
+        return config
     }
 
-    void onShutdown(Map<String, Object> event) {
-        // TODO Implement code that is executed when the application shuts down (optional)
+    private void addDynamicMethods(klass) {
+        klass.metaClass.withLocation = { Closure closure ->
+            def geoIpService = Holders.applicationContext.geoIpService
+            closure.call geoIpService.getLocation(geoIpService.getIpAddress(request))
+        }
+
+        klass.metaClass.isInCountry = { String countrycode ->
+            def geoIpService = Holders.applicationContext.geoIpService
+            def location = geoIpService.getLocation(geoIpService.getIpAddress(request))
+
+            if (location) {
+                return geoIpService.isInCountry(location, countrycode)
+            } else {
+                return false
+            }
+        }
     }
+
 }
