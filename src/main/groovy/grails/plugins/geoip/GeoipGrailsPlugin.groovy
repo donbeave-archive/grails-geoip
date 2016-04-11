@@ -62,7 +62,7 @@ This product includes GeoLite data created by MaxMind, available from
 
     Closure doWithSpring() {
         { ->
-            def conf = getConfiguration(application)
+            def conf = getConfiguration(grailsApplication)
 
             if (!conf || !conf.active) {
                 return
