@@ -78,7 +78,7 @@ This product includes GeoLite data created by MaxMind, available from
 
             try {
                 if (conf.data.resource) {
-                    dataResource = application.parentContext.getResource(conf.data.resource).getFile()
+                    dataResource = grailsApplication.parentContext.getResource(conf.data.resource).getFile()
                 }
             } catch (Exception e) {
                 println "ERROR: GeoIP data file \"${conf.data.resource}\" not exist."
@@ -101,25 +101,25 @@ This product includes GeoLite data created by MaxMind, available from
     }
 
     void doWithDynamicMethods() {
-        def conf = application.config.grails.plugin.geoip
+        def conf = config.grails.plugin.geoip
 
         if (!conf || !conf.active) {
             return
         }
 
-        for (cc in application.controllerClasses) {
+        for (cc in grailsApplication.controllerClasses) {
             addDynamicMethods cc.clazz
         }
     }
 
     void onChange(Map<String, Object> event) {
-        def conf = application.config.grails.plugin.geoip
+        def conf = grailsApplication.config.grails.plugin.geoip
 
         if (!conf || !conf.active) {
             return
         }
 
-        for (cc in application.controllerClasses) {
+        for (cc in grailsApplication.controllerClasses) {
             addDynamicMethods cc.clazz
         }
     }
