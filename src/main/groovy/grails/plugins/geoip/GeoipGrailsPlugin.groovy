@@ -22,11 +22,13 @@ import grails.plugins.Plugin
 import com.maxmind.geoip.LookupService
 import grails.util.Environment
 import grails.util.Holders
+import groovy.util.logging.Commons
 
 /**
  * @author Radu Andrei Tanasa
  * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
+@Commons
 class GeoipGrailsPlugin extends Plugin {
 
     def grailsVersion = "3.0.0 > *"
@@ -60,7 +62,6 @@ This product includes GeoLite data created by MaxMind, available from
 
     Closure doWithSpring() {
         { ->
-
             def conf = getConfiguration(application)
 
             if (!conf || !conf.active) {
@@ -142,7 +143,10 @@ This product includes GeoLite data created by MaxMind, available from
             ConfigObject defaultConfig = configSlurper.parse(dataSourceClass)
 
             ConfigObject newGeoConfig = new ConfigObject()
-            newGeoConfig.putAll(defaultConfig.geoip.merge(config.grails.plugin.geoip))
+            def geoipConfig = defaultConfig.geoip
+            def conf = config.grails.plugin.geoip
+            geoipConfig.putAll(conf)
+            newGeoConfig.merge(geoipConfig)
 
             config.grails.plugin.geoip = newGeoConfig
             application.configChanged()
